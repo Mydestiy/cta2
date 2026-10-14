@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luyện Thi Tiếng Anh Vào 10 - Ms Lê Hằng English</title>
+  <!-- Google Fonts: Nunito & Quicksand -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --primary-purple: #8854C0;
+      --primary-pink: #FD79A8;
+      --primary-yellow: #FDCB6E;
+      --primary-teal: #00C9A7;
+      --primary-blue: #0984E3;
+      --correct-green: #00D26A;
+      --correct-green-shadow: #00a352;
+      --wrong-red: #FF4757;
+      --wrong-red-shadow: #d63031;
+      --card-bg: rgba(255, 255, 255, 0.96);
+      --text-main: #2D3436;
+      --text-muted: #636E72;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Nunito', 'Quicksand', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100vh;
+      color: var(--text-main);
+      background: linear-gradient(180deg, #bbf2f6 0%, #d8e8f8 25%, #fedacb 60%, #fed1c0 85%, #fca289 100%);
+      position: relative;
+      overflow-x: hidden;
+      padding: 16px 12px 140px;
+    }
+
+    /* Bầu trời, Mặt trời phát sáng & Mây bay */
+    .sky-decorations {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .sun-glow {
+      position: absolute;
+      top: 25px;
+      left: -20px;
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, #ffeaa7 40%, rgba(255, 234, 167, 0.4) 70%, transparent 100%);
+      border-radius: 50%;
+      filter: blur(10px);
+      animation: pulseSun 6s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulseSun {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      100% { transform: scale(1.1); opacity: 1; }
+    }
+
+    .floating-cloud {
+      position: absolute;
+      fill: rgba(255, 255, 255, 0.75);
+      animation: floatCloud linear infinite;
+    }
+
+    .cloud-1 { top: 60px; left: -120px; width: 140px; animation-duration: 48s; }
+    .cloud-2 { top: 180px; left: -160px; width: 180px; animation-duration: 65s; animation-delay: -25s; }
+
+    @keyframes floatCloud {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(calc(100vw + 250px)); }
+    }
+
+    /* Dãy phố Skyline & Con đường vỉa hè sọc đỏ trắng */
+    .city-backdrop {
+      position: fixed;
+      bottom: 42px;
+      left: 0;
+      width: 100%;
+      height: 150px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.55;
+      background-repeat: repeat-x;
+      background-position: bottom center;
+      background-size: 550px 140px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 550 140'%3E%3Cpath fill='%23a5cbf5' d='M0,140 L0,70 L30,70 L30,50 L45,50 L45,30 L60,30 L60,70 L90,70 L90,140 Z M100,140 L100,40 L140,40 L140,140 Z M150,140 L150,65 L180,65 L180,140 Z M190,140 L190,20 L230,20 L230,140 Z M240,140 L240,55 L280,55 L280,140 Z M290,140 L290,35 L330,35 L330,140 Z M340,140 L340,75 L380,75 L380,140 Z M390,140 L390,15 L430,15 L430,140 Z M440,140 L440,60 L490,60 L490,140 Z M500,140 L500,45 L540,45 L540,140 Z'/%3E%3C/svg%3E");
+    }
+
+    .bottom-road {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 44px;
+      background: #4b4b4b;
+      border-top: 5px solid #2ed573;
+      z-index: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      overflow: hidden;
+    }
+
+    .road-curb {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: repeating-linear-gradient(90deg, #ff4757, #ff4757 25px, #ffffff 25px, #ffffff 50px);
+    }
+
+    .road-line {
+      height: 6px;
+      width: 45px;
+      background: #ffffff;
+      border-radius: 3px;
+      opacity: 0.9;
+    }
+
+    /* Container chính */
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Thanh Top Bar tiện ích */
+    .top-sticky-bar {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 10px 16px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      border: 2px solid #ffffff;
+      margin-bottom: 14px;
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+    }
+
+    .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .star-score-pill {
+      background: linear-gradient(135deg, #ff7675, #e84393);
+      color: white;
+      font-weight: 900;
+      font-size: 0.88rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 3px 0 #d63031;
+      white-space: nowrap;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 14px;
+      background: #E2E8F0;
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00C9A7, #00D26A);
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    .progress-count-pill {
+      background: #00C9A7;
+      color: white;
+      font-weight: 900;
+      font-size: 0.88rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+      box-shadow: 0 3px 0 #008770;
+      white-space: nowrap;
+    }
+
+    .teacher-contact-pill {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #2D3436;
+      padding-top: 4px;
+      border-top: 1px dashed #E2E8F0;
+    }
+
+    .teacher-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 800;
+      color: #6C5CE7;
+    }
+
+    .phone-tag {
+      background: #FF7675;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.8rem;
+    }
+
+    /* Banner mở đầu (Hero Banner) */
+    .unit-hero-card {
+      background: #FFFFFF;
+      border-radius: 28px;
+      padding: 22px 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      border: 3px solid #FFFFFF;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-content {
+      max-width: 72%;
+    }
+
+    .unit-badge {
+      display: inline-block;
+      background: #0984E3;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      margin-bottom: 10px;
+      box-shadow: 0 3px 0 #0764ad;
+    }
+
+    .hero-title {
+      font-size: 1.85rem;
+      font-weight: 900;
+      color: #0984E3;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .hero-subtitle {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #636E72;
+      line-height: 1.5;
+    }
+
+    .hero-graphic {
+      width: 105px;
+      height: 105px;
+      background: radial-gradient(circle, #E1F0FF 60%, #CCE5FF 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 15px rgba(9, 132, 227, 0.15);
+      position: relative;
+    }
+
+    .hero-graphic svg {
+      width: 70px;
+      height: 70px;
+    }
+
+    /* Khung nhắc nhở bắt buộc */
+    .warning-box {
+      background: linear-gradient(135deg, #FFF9E6, #FFF0C2);
+      border: 3px solid #FDCB6E;
+      border-radius: 22px;
+      padding: 18px 22px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 20px rgba(253, 203, 110, 0.35);
+      position: relative;
+    }
+
+    .warning-title {
+      font-size: 1.08rem;
+      font-weight: 900;
+      color: #D35400;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .warning-text {
+      font-size: 0.98rem;
+      line-height: 1.6;
+      font-weight: 700;
+      color: #7A4100;
+    }
+
+    .warning-tag {
+      display: inline-block;
+      margin-top: 8px;
+      background: #E17055;
+      color: white;
+      padding: 3px 12px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.85rem;
+    }
+
+    /* Header từng phần bài tập */
+    .exercise-divider {
+      background: linear-gradient(135deg, #6C5CE7, #8854C0);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 18px;
+      margin: 28px 0 16px;
+      font-size: 1.05rem;
+      font-weight: 900;
+      box-shadow: 0 6px 0 #4834D4;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Thẻ câu hỏi */
+    .question-card {
+      background: var(--card-bg);
+      border-radius: 26px;
+      padding: 22px 22px;
+      margin-bottom: 24px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      border: 3px solid #FFFFFF;
+      transition: transform 0.2s ease;
+      position: relative;
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .question-num {
+      background: linear-gradient(135deg, #6c5ce7, #8854C0);
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 900;
+      padding: 5px 16px;
+      border-radius: 14px;
+      box-shadow: 0 3px 0 #4834d4;
+    }
+
+    .question-type-badge {
+      font-size: 0.82rem;
+      font-weight: 800;
+      padding: 4px 14px;
+      border-radius: 12px;
+      background: #E8F8F5;
+      color: #00A884;
+      border: 1.5px solid #00C9A7;
+    }
+
+    .question-content {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #2D3436;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    /* Đồ họa biển báo và hình ảnh Dạng 12 & Dạng 13 */
+    .sign-box-wrapper {
+      margin: 16px 0 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .sign-notice-card {
+      border: 3px solid #2D3436;
+      border-radius: 16px;
+      padding: 16px 24px;
+      background: #FFFFFF;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+    }
+
+    .sign-park {
+      background: #3d3d3d;
+      color: #ffffff;
+      border: 6px solid #2b2b2b;
+      border-radius: 14px;
+      padding: 18px 20px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+    }
+
+    .sign-gym-orange {
+      background: #E67E22;
+      color: white;
+      border-radius: 16px;
+      padding: 18px 22px;
+      border: 4px solid #D35400;
+      box-shadow: 0 8px 20px rgba(230, 126, 34, 0.4);
+    }
+
+    .sign-quiet-zone {
+      background: #F8F9FA;
+      border: 3px solid #BDC3C7;
+      border-radius: 16px;
+      padding: 16px 20px;
+      color: #2C3E50;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+    }
+
+    .sign-no-crossing {
+      background: #C0392B;
+      color: white;
+      border-radius: 14px;
+      padding: 18px 20px;
+      border: 4px solid #962D22;
+      box-shadow: 0 8px 22px rgba(192, 57, 43, 0.35);
+    }
+
+    .sign-playground {
+      background: #F1C40F;
+      color: #2C3E50;
+      border-radius: 18px;
+      padding: 18px 22px;
+      border: 4px solid #D4AC0D;
+      box-shadow: 0 8px 20px rgba(241, 196, 15, 0.35);
+    }
+
+    /* Gạch chân âm/từ */
+    .phonetic-u, u {
+      color: #D63031 !important;
+      text-decoration: underline !important;
+      text-decoration-thickness: 3px !important;
+      text-underline-offset: 4px !important;
+      font-weight: 900;
+    }
+
+    /* Các nút đáp án 3D */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 600px) {
+      .options-grid.two-cols {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .option-btn {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      background: #FFFFFF;
+      border: 2.5px solid #E2E8F0;
+      border-radius: 18px;
+      padding: 12px 18px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #2D3436;
+      cursor: pointer;
+      text-align: left;
+      transition: transform 0.15s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.15s ease;
+      box-shadow: 0 5px 0 #CBD5E1;
+      position: relative;
+      outline: none;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      transform: translateY(-2px) scale(1.02);
+      border-color: #A29BFE;
+      box-shadow: 0 7px 0 #a29bfe;
+      background: #FDFBFF;
+    }
+
+    .option-btn:active:not(:disabled) {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #CBD5E1;
+    }
+
+    .option-key {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      background: #F1F2F6;
+      color: #6C5CE7;
+      border-radius: 10px;
+      margin-right: 12px;
+      font-weight: 900;
+      font-size: 0.95rem;
+      border: 1.5px solid #DFE4EA;
+    }
+
+    .option-btn.correct {
+      background: #E8FBF0 !important;
+      border-color: var(--correct-green) !important;
+      color: #056636 !important;
+      box-shadow: 0 5px 0 var(--correct-green-shadow) !important;
+    }
+
+    .option-btn.correct .option-key {
+      background: var(--correct-green);
+      color: white;
+      border-color: var(--correct-green-shadow);
+    }
+
+    .option-btn.wrong {
+      background: #FFF0F2 !important;
+      border-color: var(--wrong-red) !important;
+      color: #A31221 !important;
+      box-shadow: 0 5px 0 var(--wrong-red-shadow) !important;
+      animation: shake 0.45s ease-in-out;
+    }
+
+    .option-btn.wrong .option-key {
+      background: var(--wrong-red);
+      color: white;
+      border-color: var(--wrong-red-shadow);
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    /* Khung giải thích chuẩn ảnh 1 */
+    .explanation-box {
+      margin-top: 20px;
+      background: #FFFFFF;
+      border: 2px dashed #A29BFE;
+      border-radius: 22px;
+      padding: 18px 20px;
+      animation: slideDown 0.35s ease-out;
+      box-shadow: 0 8px 24px rgba(108, 92, 231, 0.08);
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .exp-title {
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: #E65100;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .exp-translation-bubble {
+      background: #FFF9E6;
+      border-left: 5px solid #FDCB6E;
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: #2D3436;
+      line-height: 1.5;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .exp-translation-bubble .icon {
+      font-size: 1.25rem;
+    }
+
+    .exp-section-title {
+      font-size: 0.98rem;
+      font-weight: 900;
+      color: #2D3436;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    @media (min-width: 620px) {
+      .analysis-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .analysis-card {
+      background: #FFFFFF;
+      border: 1.8px solid #E2E8F0;
+      border-radius: 16px;
+      padding: 10px 14px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+
+    .analysis-word {
+      font-weight: 900;
+      font-size: 1rem;
+      color: #0984E3;
+      margin-right: 4px;
+    }
+
+    .analysis-word.green {
+      color: #00B894;
+    }
+
+    .badge-pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      margin: 0 4px;
+      vertical-align: middle;
+    }
+
+    .badge-wrong {
+      background: #FEE2E2;
+      color: #DC2626;
+      border: 1px solid #FCA5A5;
+    }
+
+    .badge-structure {
+      background: #EDE9FE;
+      color: #6D28D9;
+      border: 1px solid #DDD6FE;
+    }
+
+    .badge-correct {
+      background: #D1FAE5;
+      color: #059669;
+      border: 1px solid #A7F3D0;
+    }
+
+    .analysis-meaning {
+      font-weight: 700;
+      color: #7A4100;
+    }
+
+    .exp-rule-row {
+      margin-bottom: 12px;
+      font-size: 0.96rem;
+      line-height: 1.6;
+      color: #2D3436;
+      font-weight: 600;
+    }
+
+    .exp-rule-row .check-label {
+      font-weight: 900;
+      color: #00A884;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-right: 6px;
+    }
+
+    .exp-rule-pill {
+      background: #FFF3CD;
+      color: #856404;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 10px;
+      margin: 0 4px;
+      display: inline-block;
+    }
+
+    .exp-highlight-green {
+      background: #E8F8F5;
+      color: #00A884;
+      font-weight: 900;
+      padding: 2px 8px;
+      border-radius: 8px;
+      display: inline-block;
+      margin: 0 2px;
+    }
+
+    .exp-wrong-row {
+      font-size: 0.96rem;
+      line-height: 1.6;
+      color: #2D3436;
+      font-weight: 600;
+    }
+
+    .exp-wrong-row .cross-label {
+      font-weight: 900;
+      color: #D63031;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-right: 6px;
+    }
+
+    .exp-wrong-tag {
+      background: #FFEAEA;
+      color: #D63031;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 8px;
+      display: inline-block;
+      margin: 0 3px;
+    }
+
+    /* Nút nộp bài */
+    .submit-section {
+      text-align: center;
+      margin-top: 36px;
+      margin-bottom: 50px;
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #00C9A7, #00B894);
+      color: white;
+      font-size: 1.25rem;
+      font-weight: 900;
+      padding: 16px 48px;
+      border: none;
+      border-radius: 999px;
+      box-shadow: 0 8px 0 #008770, 0 15px 25px rgba(0, 201, 167, 0.4);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      letter-spacing: 0.5px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 11px 0 #008770, 0 18px 30px rgba(0, 201, 167, 0.5);
+    }
+
+    .submit-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 4px 0 #008770;
+    }
+
+    /* Modal kết quả */
+    .result-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 16px;
+      backdrop-filter: blur(5px);
+    }
+
+    .result-card {
+      background: white;
+      border-radius: 30px;
+      padding: 32px 26px;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      position: relative;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .result-emoji {
+      font-size: 3.5rem;
+      margin-bottom: 10px;
+      animation: bounce 1.5s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .result-score {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #6C5CE7;
+      margin-bottom: 12px;
+    }
+
+    .result-feedback {
+      background: #F8F9FE;
+      border-radius: 18px;
+      padding: 16px;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      font-weight: 700;
+      color: #2D3436;
+      margin-bottom: 24px;
+      border: 2px dashed #A29BFE;
+    }
+
+    .retry-btn {
+      background: linear-gradient(135deg, #FDCB6E, #E17055);
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 900;
+      padding: 12px 36px;
+      border: none;
+      border-radius: 999px;
+      box-shadow: 0 6px 0 #D35400;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .retry-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 0 #D35400;
+    }
+
+    .retry-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 3px 0 #D35400;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Sky & City -->
+  <div class="sky-decorations">
+    <div class="sun-glow"></div>
+    <svg class="floating-cloud cloud-1" viewBox="0 0 100 60"><path d="M20,40 Q10,40 10,30 Q10,20 25,20 Q30,10 45,10 Q60,10 65,20 Q80,20 80,30 Q90,30 90,40 Q90,50 80,50 L20,50 Z"/></svg>
+    <svg class="floating-cloud cloud-2" viewBox="0 0 100 60"><path d="M20,40 Q10,40 10,30 Q10,20 25,20 Q30,10 45,10 Q60,10 65,20 Q80,20 80,30 Q90,30 90,40 Q90,50 80,50 L20,50 Z"/></svg>
+  </div>
+  <div class="city-backdrop"></div>
+  <div class="bottom-road">
+    <div class="road-curb"></div>
+    <div class="road-line"></div><div class="road-line"></div><div class="road-line"></div><div class="road-line"></div><div class="road-line"></div><div class="road-line"></div><div class="road-line"></div>
+  </div>
+
+  <div class="container">
+
+    <!-- Top Sticky Progress Bar -->
+    <div class="top-sticky-bar">
+      <div class="progress-row">
+        <div class="star-score-pill">
+          <span>⭐</span> <span id="star-score-text">0 / 24</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-bar-fill"></div>
+        </div>
+        <div class="progress-count-pill" id="progress-ratio-text">0 / 24</div>
+      </div>
+      <div class="teacher-contact-pill">
+        <div class="teacher-badge">
+          <span>👩‍🏫</span> Giáo viên tạo: <strong>Ms Lê Hằng English</strong>
+        </div>
+        <div>
+          <span>Chuyên luyện thi HSG & Luyện thi vào lớp 10 chất lượng cao</span> • <span class="phone-tag">☎️ 0936.322.809</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Unit Banner -->
+    <div class="unit-hero-card">
+      <div class="hero-content">
+        <div class="unit-badge">🚆 BÀI KIỂM TRA CHUYÊN ĐỀ 7 - 13 (VIP ÔN THI VÀO 10)</div>
+        <h1 class="hero-title">Practice Test Mastery</h1>
+        <div class="hero-subtitle">Từ đồng nghĩa & Trái nghĩa | Phát hiện lỗi sai | Viết câu hoàn chỉnh | Sắp xếp đoạn văn & Thư | Đọc thông báo & Biển báo hình ảnh</div>
+      </div>
+      <div class="hero-graphic">
+        <svg viewBox="0 0 100 100">
+          <rect x="25" y="20" width="30" height="70" rx="4" fill="#0984E3"/>
+          <polygon points="25,20 40,5 55,20" fill="#0984E3"/>
+          <rect x="60" y="45" width="25" height="45" rx="3" fill="#74B9FF"/>
+          <circle cx="33" cy="32" r="3" fill="#FFF"/><circle cx="47" cy="32" r="3" fill="#FFF"/>
+          <circle cx="33" cy="46" r="3" fill="#FFF"/><circle cx="47" cy="46" r="3" fill="#FFF"/>
+          <circle cx="33" cy="60" r="3" fill="#FFF"/><circle cx="47" cy="60" r="3" fill="#FFF"/>
+          <circle cx="33" cy="74" r="3" fill="#FFF"/><circle cx="47" cy="74" r="3" fill="#FFF"/>
+          <circle cx="68" cy="56" r="2.5" fill="#FFF"/><circle cx="77" cy="56" r="2.5" fill="#FFF"/>
+          <circle cx="68" cy="68" r="2.5" fill="#FFF"/><circle cx="77" cy="68" r="2.5" fill="#FFF"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Khung thông báo bắt buộc -->
+    <div class="warning-box">
+      <div class="warning-title">⚠️ LỜI NHẮC CỰC KỲ QUAN TRỌNG ⚠️</div>
+      <div class="warning-text">
+        Chỉ có đọc kỹ giải thích ngay sau mỗi câu, sau đó ghi lại từ vựng/cấu trúc mới vào vở để học thì mới thực sự giỏi lên.<br>
+        Làm cho xong mà không đọc giải thích hay đọc qua loa không ghi chép thì chỉ tốn thời gian vô ích!
+      </div>
+      <div class="warning-tag">Kéo tới đâu, làm tới đó! *</div>
+    </div>
+
+    <!-- Nơi hiển thị các câu hỏi -->
+    <div id="quiz-container"></div>
+
+    <!-- Nút Nộp Bài -->
+    <div class="submit-section">
+      <button class="submit-btn" onclick="submitQuiz()">🎉 NỘP BÀI KIỂM TRA</button>
+    </div>
+
+  </div>
+
+  <!-- Popup kết quả -->
+  <div id="result-modal" class="result-modal">
+    <div class="result-card">
+      <div id="result-emoji" class="result-emoji">🌟</div>
+      <div id="result-score" class="result-score">0 / 24</div>
+      <div id="result-feedback" class="result-feedback"></div>
+      <button class="retry-btn" onclick="retryQuiz()">🔄 Làm lại bài</button>
+    </div>
+  </div>
+
+  <script>
+    // TOÀN BỘ 24 CÂU HỎI TỪ CÁC DẠNG 7 ĐẾN 13 KÈM GIẢI THÍCH CHI TIẾT
+    const quizData = [
+      // DẠNG 7: TÌM TỪ ĐỒNG NGHĨA (3 câu)
+      {
+        id: 1,
+        exTitle: "DẠNG 7: TÌM TỪ ĐỒNG NGHĨA - Mark the letter A, B, C, or D on your answer sheet to indicate the word CLOSEST in meaning to the underlined word.",
+        question: "Question 1. Eating too much junk food, especially fast food and sugary snacks, may <u>cause</u> obesity among teenagers.",
+        options: [
+          { key: "A", text: "bring about", raw: "bring about" },
+          { key: "B", text: "go out", raw: "go out" },
+          { key: "C", text: "move in", raw: "move in" },
+          { key: "D", text: "pass down", raw: "pass down" }
+        ],
+        correct: "A",
+        explanation: {
+          translation: "Ăn quá nhiều đồ ăn vặt không lành mạnh, đặc biệt là thức ăn nhanh và đồ ăn vặt có đường, có thể gây ra bệnh béo phì ở lứa tuổi thanh thiếu niên.",
+          cards: [
+            { word: "bring about", isCorrect: true, badgeText: "đồng nghĩa chuẩn", badgeType: "badge-correct", meaning: "= đem lại, gây ra, dẫn đến (= cause)" },
+            { word: "go out", isCorrect: false, badgeText: "phrasal verb", badgeType: "badge-structure", meaning: "= đi ra ngoài, mất điện, hẹn hò" },
+            { word: "move in", isCorrect: false, badgeText: "phrasal verb", badgeType: "badge-structure", meaning: "= chuyển đến, dọn đến ở" },
+            { word: "pass down", isCorrect: false, badgeText: "phrasal verb", badgeType: "badge-structure", meaning: "= truyền lại cho thế hệ sau" }
+          ],
+          whyCorrect: { ruleTitle: "Cụm động từ chỉ nguyên nhân kết quả", detail: "<span class='exp-highlight-green'>cause</span> (động từ: gây ra) đồng nghĩa hoàn toàn với <span class='exp-highlight-green'>bring about</span> (mang lại, làm cho điều gì xảy ra)." },
+          whyWrong: [
+            { word: "go out", reason: "mang nghĩa ra ngoài chơi hoặc lửa/điện bị tắt." },
+            { word: "move in", reason: "mang nghĩa chuyển nơi ở mới." },
+            { word: "pass down", reason: "mang nghĩa truyền lại tay nghề/truyền thống." }
+          ]
+        }
+      },
+      {
+        id: 2,
+        exTitle: "DẠNG 7: TÌM TỪ ĐỒNG NGHĨA - Mark the letter A, B, C, or D on your answer sheet to indicate the word CLOSEST in meaning to the underlined word.",
+        question: "Question 2. During the holiday season, the square is <u>full of</u> sparkling decorations and street performers.",
+        options: [
+          { key: "A", text: "stressed out", raw: "stressed out" },
+          { key: "B", text: "packed with", raw: "packed with" },
+          { key: "C", text: "famous for", raw: "famous for" },
+          { key: "D", text: "pleased with", raw: "pleased with" }
+        ],
+        correct: "B",
+        explanation: {
+          translation: "Vào mùa lễ hội, quảng trường tràn ngập những món đồ trang trí lấp lánh và các nghệ sĩ biểu diễn đường phố.",
+          cards: [
+            { word: "stressed out", isCorrect: false, badgeText: "tính từ", badgeType: "badge-structure", meaning: "= căng thẳng, mệt mỏi" },
+            { word: "packed with", isCorrect: true, badgeText: "đồng nghĩa chuẩn", badgeType: "badge-correct", meaning: "= chật ních, tràn ngập (= full of)" },
+            { word: "famous for", isCorrect: false, badgeText: "tính từ", badgeType: "badge-structure", meaning: "= nổi tiếng về điều gì" },
+            { word: "pleased with", isCorrect: false, badgeText: "tính từ", badgeType: "badge-structure", meaning: "= hài lòng, vừa ý với cái gì" }
+          ],
+          whyCorrect: { ruleTitle: "Cụm từ chỉ sự đông đúc, tràn ngập", detail: "<span class='exp-highlight-green'>full of</span> = <span class='exp-highlight-green'>packed with</span> / crowded with (chật kín, ngập tràn thứ gì đó)." },
+          whyWrong: [
+            { word: "stressed out", reason: "chỉ tâm trạng mệt mỏi của con người." },
+            { word: "famous for", reason: "chỉ sự nổi danh, không diễn tả sự tràn ngập đồ đạc." },
+            { word: "pleased with", reason: "thể hiện sự bằng lòng, không phù hợp ngữ cảnh." }
+          ]
+        }
+      },
+      {
+        id: 3,
+        exTitle: "DẠNG 7: TÌM TỪ ĐỒNG NGHĨA - Mark the letter A, B, C, or D on your answer sheet to indicate the word CLOSEST in meaning to the underlined word.",
+        question: "Question 3. Because the residents complained, the committee had to adjust the <u>initial</u> painting of the community center's logo.",
+        options: [
+          { key: "A", text: "original", raw: "original" },
+          { key: "B", text: "bustling", raw: "bustling" },
+          { key: "C", text: "mental", raw: "mental" },
+          { key: "D", text: "fattening", raw: "fattening" }
+        ],
+        correct: "A",
+        explanation: {
+          translation: "Vì người dân phàn nàn, ủy ban đã phải điều chỉnh lại bản vẽ ban đầu của logo trung tâm cộng đồng.",
+          cards: [
+            { word: "original", isCorrect: true, badgeText: "đồng nghĩa chuẩn", badgeType: "badge-correct", meaning: "= ban đầu, nguyên bản (= initial)" },
+            { word: "bustling", isCorrect: false, badgeText: "tính từ", badgeType: "badge-structure", meaning: "= nhộn nhịp, hối hả" },
+            { word: "mental", isCorrect: false, badgeText: "tính từ", badgeType: "badge-structure", meaning: "= thuộc về tinh thần, trí óc" },
+            { word: "fattening", isCorrect: false, badgeText: "tính từ", badgeType: "badge-structure", meaning: "= gây béo (thức ăn)" }
+          ],
+          whyCorrect: { ruleTitle: "Từ vựng chỉ trạng thái đầu tiên", detail: "<span class='exp-highlight-green'>initial</span> (tính từ: ban đầu, khởi điểm) đồng nghĩa với <span class='exp-highlight-green'>original</span> (nguyên bản, ban sơ)." },
+          whyWrong: [
+            { word: "bustling", reason: "dùng để tả phố xá đông đúc nhộn nhịp." },
+            { word: "mental", reason: "thuộc tâm lý, trí tuệ." },
+            { word: "fattening", reason: "chỉ thức ăn nhiều dầu mỡ gây tăng cân." }
+          ]
+        }
+      },
+
+      // DẠNG 8: TÌM TỪ TRÁI NGHĨA (3 câu)
+      {
+        id: 4,
+        exTitle: "DẠNG 8: TÌM TỪ TRÁI NGHĨA - Mark the letter A, B, C, or D on your answer sheet to indicate the word OPPOSITE in meaning to the underlined word.",
+        question: "Question 1. Illegal dumping of waste can <u>destroy</u> the beauty of the neighborhood.",
+        options: [
+          { key: "A", text: "suggest", raw: "suggest" },
+          { key: "B", text: "Preserve", raw: "Preserve" },
+          { key: "C", text: "consult", raw: "consult" },
+          { key: "D", text: "expect", raw: "expect" }
+        ],
+        correct: "B",
+        explanation: {
+          translation: "Việc đổ rác thải trái phép có thể phá hủy cảnh quan tươi đẹp của khu phố.",
+          cards: [
+            { word: "suggest", isCorrect: false, badgeText: "động từ", badgeType: "badge-structure", meaning: "= gợi ý, đề xuất" },
+            { word: "Preserve", isCorrect: true, badgeText: "trái nghĩa chuẩn", badgeType: "badge-correct", meaning: "= bảo tồn, gìn giữ (<> destroy phá hủy)" },
+            { word: "consult", isCorrect: false, badgeText: "động từ", badgeType: "badge-structure", meaning: "= xin tư vấn, tham khảo ý kiến" },
+            { word: "expect", isCorrect: false, badgeText: "động từ", badgeType: "badge-structure", meaning: "= kỳ vọng, mong chờ" }
+          ],
+          whyCorrect: { ruleTitle: "Cặp động từ Phá hủy - Bảo tồn", detail: "<span class='exp-highlight-green'>destroy</span> (phá hủy hoàn toàn) trái nghĩa với <span class='exp-highlight-green'>preserve</span> (bảo tồn, gìn giữ cho nguyên vẹn)." },
+          whyWrong: [
+            { word: "suggest", reason: "nghĩa là gợi ý, không đối lập nghĩa." },
+            { word: "consult", reason: "hỏi ý kiến bác sĩ/chuyên gia." },
+            { word: "expect", reason: "mong đợi điều gì sẽ tới." }
+          ]
+        }
+      },
+      {
+        id: 5,
+        exTitle: "DẠNG 8: TÌM TỪ TRÁI NGHĨA - Mark the letter A, B, C, or D on your answer sheet to indicate the word OPPOSITE in meaning to the underlined word.",
+        question: "Question 2. If you constantly snack on chips, you'll inevitably <u>put on</u> weight.",
+        options: [
+          { key: "A", text: "wrap", raw: "wrap" },
+          { key: "B", text: "choose", raw: "choose" },
+          { key: "C", text: "gain", raw: "gain" },
+          { key: "D", text: "lose", raw: "lose" }
+        ],
+        correct: "D",
+        explanation: {
+          translation: "Nếu bạn liên tục ăn vặt khoai tây chiên, bạn chắc chắn sẽ bị tăng cân.",
+          cards: [
+            { word: "wrap", isCorrect: false, badgeText: "động từ", badgeType: "badge-structure", meaning: "= gói lại, bọc lại" },
+            { word: "choose", isCorrect: false, badgeText: "động từ", badgeType: "badge-structure", meaning: "= lựa chọn" },
+            { word: "gain", isCorrect: false, badgeText: "đồng nghĩa", badgeType: "badge-wrong", meaning: "= tăng lên (= put on weight)" },
+            { word: "lose", isCorrect: true, badgeText: "trái nghĩa chuẩn", badgeType: "badge-correct", meaning: "= giảm đi (<> put on weight tăng cân)" }
+          ],
+          whyCorrect: { ruleTitle: "Cặp từ Tăng cân - Giảm cân", detail: "<span class='exp-highlight-green'>put on weight</span> = gain weight (tăng cân) trái nghĩa hoàn toàn với <span class='exp-highlight-green'>lose weight</span> (giảm cân)." },
+          whyWrong: [
+            { word: "wrap", reason: "nghĩa là gói quà/bọc đồ." },
+            { word: "choose", reason: "nghĩa là chọn lựa." },
+            { word: "gain", reason: "đây là từ đồng nghĩa, cẩn thận bẫy." }
+          ]
+        }
+      },
+      {
+        id: 6,
+        exTitle: "DẠNG 8: TÌM TỪ TRÁI NGHĨA - Mark the letter A, B, C, or D on your answer sheet to indicate the word OPPOSITE in meaning to the underlined word.",
+        question: "Question 3. Building <u>positive</u> relationships with adults can provide a reliable source of emotional support.",
+        options: [
+          { key: "A", text: "responsible", raw: "responsible" },
+          { key: "B", text: "Negative", raw: "Negative" },
+          { key: "C", text: "physical", raw: "physical" },
+          { key: "D", text: "healthy", raw: "healthy" }
+        ],
+        correct: "B",
+        explanation: {
+          translation: "Việc xây dựng các mối quan hệ tích cực với người lớn có thể mang lại nguồn hỗ trợ tinh thần đáng tin cậy.",
+          cards: [
+            { word: "responsible", isCorrect: false, badgeText: "tính từ", badgeType: "badge-structure", meaning: "= có trách nhiệm" },
+            { word: "Negative", isCorrect: true, badgeText: "trái nghĩa chuẩn", badgeType: "badge-correct", meaning: "= tiêu cực (<> positive tích cực)" },
+            { word: "physical", isCorrect: false, badgeText: "tính từ", badgeType: "badge-structure", meaning: "= thuộc thể chất" },
+            { word: "healthy", isCorrect: false, badgeText: "tính từ", badgeType: "badge-structure", meaning: "= lành mạnh, khỏe khoắn" }
+          ],
+          whyCorrect: { ruleTitle: "Cặp từ Tích cực - Tiêu cực", detail: "<span class='exp-highlight-green'>positive</span> (tích cực, tốt đẹp) trái nghĩa trực tiếp với <span class='exp-highlight-green'>negative</span> (tiêu cực, xấu đi)." },
+          whyWrong: [
+            { word: "responsible", reason: "có tinh thần trách nhiệm, không đối lập nghĩa." },
+            { word: "physical", reason: "thuộc về cơ thể, thể chất." },
+            { word: "healthy", reason: "mang nghĩa tích cực, lành mạnh." }
+          ]
+        }
+      },
+
+      // DẠNG 9: PHÁT HIỆN LỖI SAI (4 câu)
+      {
+        id: 7,
+        exTitle: "DẠNG 9: PHÁT HIỆN LỖI SAI - Mark the letter A, B, C, or D on your answer sheet to indicate the part that is incorrect in each of the sentences.",
+        question: "Question 1. Drivers must <u>lead</u> attention <u>to</u> cyclists and pedestrians <u>when</u> navigating <u>rush hour</u> traffic.",
+        options: [
+          { key: "A", text: "lead", raw: "lead" },
+          { key: "B", text: "to", raw: "to" },
+          { key: "C", text: "when", raw: "when" },
+          { key: "D", text: "rush hour", raw: "rush hour" }
+        ],
+        correct: "A",
+        explanation: {
+          translation: "Các tài xế phải chú ý đến người đi xe đạp và người đi bộ khi di chuyển trong giờ cao điểm.",
+          cards: [
+            { word: "lead", isCorrect: true, badgeText: "❌ sai kết hợp từ", badgeType: "badge-correct", meaning: "= sai! Cần sửa thành 'pay' trong 'pay attention to'" },
+            { word: "to", isCorrect: false, badgeText: "giới từ chuẩn", badgeType: "badge-structure", meaning: "= đúng (pay attention TO sb)" },
+            { word: "when", isCorrect: false, badgeText: "liên từ chuẩn", badgeType: "badge-structure", meaning: "= đúng (when + V-ing)" },
+            { word: "rush hour", isCorrect: false, badgeText: "danh từ chuẩn", badgeType: "badge-structure", meaning: "= đúng (giờ cao điểm)" }
+          ],
+          whyCorrect: { ruleTitle: "Collocation với danh từ Attention", detail: "Cụm từ cố định trong tiếng Anh: <span class='exp-highlight-green'>pay attention to sb/sth</span> (chú ý đến ai/cái gì). Không dùng động từ 'lead' hay 'make' với attention." },
+          whyWrong: [
+            { word: "to", reason: "giới từ đi kèm chính xác với attention." },
+            { word: "when", reason: "rút gọn mệnh đề đồng chủ ngữ 'when navigating' hoàn toàn đúng." },
+            { word: "rush hour", reason: "danh từ bổ nghĩa cho traffic chuẩn ngữ pháp." }
+          ]
+        }
+      },
+      {
+        id: 8,
+        exTitle: "DẠNG 9: PHÁT HIỆN LỖI SAI - Mark the letter A, B, C, or D on your answer sheet to indicate the part that is incorrect in each of the sentences.",
+        question: "Question 2. Please notify <u>the</u> landlord <u>by</u> advance <u>if</u> you plan to <u>move out of</u> the apartment.",
+        options: [
+          { key: "A", text: "if", raw: "if" },
+          { key: "B", text: "move out of", raw: "move out of" },
+          { key: "C", text: "by", raw: "by" },
+          { key: "D", text: "the", raw: "the" }
+        ],
+        correct: "C",
+        explanation: {
+          translation: "Vui lòng thông báo cho chủ nhà trước nếu bạn có dự định chuyển ra khỏi căn hộ.",
+          cards: [
+            { word: "if", isCorrect: false, badgeText: "liên từ chuẩn", badgeType: "badge-structure", meaning: "= đúng (mệnh đề điều kiện)" },
+            { word: "move out of", isCorrect: false, badgeText: "phrasal verb", badgeType: "badge-structure", meaning: "= đúng (chuyển ra khỏi)" },
+            { word: "by", isCorrect: true, badgeText: "❌ sai giới từ", badgeType: "badge-correct", meaning: "= sai! Phải sửa thành 'in' trong 'in advance'" },
+            { word: "the", isCorrect: false, badgeText: "mạo từ chuẩn", badgeType: "badge-structure", meaning: "= đúng (chủ nhà xác định)" }
+          ],
+          whyCorrect: { ruleTitle: "Cụm giới từ cố định (Prepositional Phrase)", detail: "Cụm từ mang nghĩa 'làm trước, thông báo trước' luôn là <span class='exp-highlight-green'>in advance</span>. Dùng 'by advance' hoặc 'for advance' là hoàn toàn sai." },
+          whyWrong: [
+            { word: "if", reason: "nối mệnh đề điều kiện chuẩn xác." },
+            { word: "move out of", reason: "cụm động từ đúng nghĩa dọn đi." },
+            { word: "the", reason: "xác định rõ chủ nhà của căn hộ." }
+          ]
+        }
+      },
+      {
+        id: 9,
+        exTitle: "DẠNG 9: PHÁT HIỆN LỖI SAI - Mark the letter A, B, C, or D on your answer sheet to indicate the part that is incorrect in each of the sentences.",
+        question: "Question 3. The local committee <u>is</u> busy <u>to plan</u> the summer festival, <u>hoping</u> for <u>a</u> big turnout.",
+        options: [
+          { key: "A", text: "is", raw: "is" },
+          { key: "B", text: "to plan", raw: "to plan" },
+          { key: "C", text: "hoping", raw: "hoping" },
+          { key: "D", text: "a", raw: "a" }
+        ],
+        correct: "B",
+        explanation: {
+          translation: "Ủy ban địa phương đang bận rộn lên kế hoạch cho lễ hội mùa hè với hy vọng sẽ có đông đảo người tham gia.",
+          cards: [
+            { word: "is", isCorrect: false, badgeText: "chia thì chuẩn", badgeType: "badge-structure", meaning: "= đúng (chủ ngữ số ít 'committee')" },
+            { word: "to plan", isCorrect: true, badgeText: "❌ sai cấu trúc", badgeType: "badge-correct", meaning: "= sai! Phải sửa thành 'planning' sau 'busy'" },
+            { word: "hoping", isCorrect: false, badgeText: "phân từ chuẩn", badgeType: "badge-structure", meaning: "= đúng (mệnh đề phân từ chỉ mục đích/hy vọng)" },
+            { word: "a", isCorrect: false, badgeText: "mạo từ chuẩn", badgeType: "badge-structure", meaning: "= đúng (a big turnout: số lượng đông)" }
+          ],
+          whyCorrect: { ruleTitle: "Cấu trúc với tính từ Busy", detail: "Quy tắc ngữ pháp cố định: <span class='exp-highlight-green'>be busy + V-ing</span> (bận rộn làm việc gì). Do đó, 'to plan' phải sửa thành <span class='exp-highlight-green'>planning</span>." },
+          whyWrong: [
+            { word: "is", reason: "chia to be số ít hòa hợp với committee." },
+            { word: "hoping", reason: "rút gọn mệnh đề phân từ hiện tại V-ing chuẩn." },
+            { word: "a", reason: "đi với danh từ đếm được số ít turnout." }
+          ]
+        }
+      },
+      {
+        id: 10,
+        exTitle: "DẠNG 9: PHÁT HIỆN LỖI SAI - Mark the letter A, B, C, or D on your answer sheet to indicate the part that is incorrect in each of the sentences.",
+        question: "Question 4. The traffic was terrible <u>this</u> morning. By the <u>stuff</u>, have you tried <u>taking</u> the bus <u>instead</u>?",
+        options: [
+          { key: "A", text: "taking", raw: "taking" },
+          { key: "B", text: "this", raw: "this" },
+          { key: "C", text: "stuff", raw: "stuff" },
+          { key: "D", text: "instead", raw: "instead" }
+        ],
+        correct: "C",
+        explanation: {
+          translation: "Giao thông sáng nay kinh khủng thật đấy. Nhân tiện thì, cậu đã thử đi xe buýt thay thế chưa?",
+          cards: [
+            { word: "taking", isCorrect: false, badgeText: "chia V chuẩn", badgeType: "badge-structure", meaning: "= đúng (try + V-ing: thử làm gì)" },
+            { word: "this", isCorrect: false, badgeText: "chỉ định chuẩn", badgeType: "badge-structure", meaning: "= đúng (this morning: sáng nay)" },
+            { word: "stuff", isCorrect: true, badgeText: "❌ sai thành ngữ", badgeType: "badge-correct", meaning: "= sai! Phải sửa thành 'way' trong 'By the way'" },
+            { word: "instead", isCorrect: false, badgeText: "trạng từ chuẩn", badgeType: "badge-structure", meaning: "= đúng (để thay thế)" }
+          ],
+          whyCorrect: { ruleTitle: "Thành ngữ chuyển ý trong giao tiếp (Idiom)", detail: "Cụm từ cửa miệng dùng để chuyển chủ đề hoặc hỏi thêm điều gì: <span class='exp-highlight-green'>By the way</span> (Nhân tiện, tiện thể). Không tồn tại cụm 'By the stuff'." },
+          whyWrong: [
+            { word: "taking", reason: "sau try mang nghĩa thử nghiệm dùng V-ing." },
+            { word: "this", reason: "this morning là mốc thời gian chuẩn." },
+            { word: "instead", reason: "đứng cuối câu mang nghĩa thay vào đó hoàn toàn đúng." }
+          ]
+        }
+      },
+
+      // DẠNG 10: DÙNG TỪ GỢI Ý TẠO THÀNH CÂU HOÀN CHỈNH (5 câu)
+      {
+        id: 11,
+        exTitle: "DẠNG 10: DÙNG TỪ GỢI Ý TẠO THÀNH CÂU HOÀN CHỈNH - Mark the letter A, B, C, or D on your answer sheet to indicate the sentence that is BEST written from the words/phrases given.",
+        question: "Question 1. Chronic joint aches / can / significantly / reduced / regular exercise / and / well-balanced diet.",
+        options: [
+          { key: "A", text: "Chronic joint aches can reduce significantly with regular exercise yet a well-balanced diet.", raw: "Chronic joint aches can reduce significantly with regular exercise yet a well-balanced diet." },
+          { key: "B", text: "Chronic joint aches can be significantly reduced with regular exercise yet well-balanced diet.", raw: "Chronic joint aches can be significantly reduced with regular exercise yet well-balanced diet." },
+          { key: "C", text: "Chronic joint aches can be significantly reduced with regular exercise and a well-balanced diet.", raw: "Chronic joint aches can be significantly reduced with regular exercise and a well-balanced diet." },
+          { key: "D", text: "Chronic joint aches can be significantly reduced with regular exercise and well-balanced diet.", raw: "Chronic joint aches can be significantly reduced with regular exercise and well-balanced diet." }
+        ],
+        correct: "C",
+        explanation: {
+          translation: "Những cơn đau khớp mãn tính có thể được giảm thiểu đáng kể nhờ vào việc tập thể dục đều đặn và một chế độ ăn uống cân bằng dinh dưỡng.",
+          cards: [
+            { word: "Câu A", isCorrect: false, badgeText: "sai bị động", badgeType: "badge-wrong", meaning: "= can reduce (chủ động là sai) và dùng yet" },
+            { word: "Câu B", isCorrect: false, badgeText: "thiếu mạo từ", badgeType: "badge-wrong", meaning: "= dùng liên từ yet và thiếu mạo từ 'a'" },
+            { word: "Câu C", isCorrect: true, badgeText: "chuẩn 100%", badgeType: "badge-correct", meaning: "= can be reduced, dùng 'and' và 'a well-balanced diet'" },
+            { word: "Câu D", isCorrect: false, badgeText: "thiếu mạo từ", badgeType: "badge-wrong", meaning: "= thiếu mạo từ 'a' trước danh từ đếm được diet" }
+          ],
+          whyCorrect: { ruleTitle: "Thể bị động với động từ khuyết thiếu & Mạo từ", detail: "1. Cơn đau không thể tự giảm mà 'được giảm': <span class='exp-highlight-green'>can be significantly reduced</span>.<br>2. Cụm danh từ đếm được số ít cần mạo từ: <span class='exp-highlight-green'>and a well-balanced diet</span>." },
+          whyWrong: [
+            { word: "Câu A", reason: "dùng thể chủ động và sai liên từ 'yet'." },
+            { word: "Câu B", reason: "dùng 'yet' làm sai mối quan hệ song hành và thiếu 'a'." },
+            { word: "Câu D", reason: "thiếu mạo từ 'a' trước 'well-balanced diet'." }
+          ]
+        }
+      },
+      {
+        id: 12,
+        exTitle: "DẠNG 10: DÙNG TỪ GỢI Ý TẠO THÀNH CÂU HOÀN CHỈNH - Mark the letter A, B, C, or D on your answer sheet to indicate the sentence that is BEST written from the words/phrases given.",
+        question: "Question 2. A / teen blogger / advice / on / how / effectively / balance / screen time / and outdoor activities.",
+        options: [
+          { key: "A", text: "A teen blogger offered advice on how effectively balance screen time and outdoor activities.", raw: "A teen blogger offered advice on how effectively balance screen time and outdoor activities." },
+          { key: "B", text: "A teen blogger offered advice on how to effectively balance screen time and outdoor activities.", raw: "A teen blogger offered advice on how to effectively balance screen time and outdoor activities." },
+          { key: "C", text: "A teen blogger gave advice on how effectively balancing screen time and outdoor activities.", raw: "A teen blogger gave advice on how effectively balancing screen time and outdoor activities." },
+          { key: "D", text: "A teen blogger offered an advice on how to effectively balance screen time and outdoor activities.", raw: "A teen blogger offered an advice on how to effectively balance screen time and outdoor activities." }
+        ],
+        correct: "B",
+        explanation: {
+          translation: "Một blogger tuổi thiếu niên đã đưa ra lời khuyên về cách cân bằng hiệu quả giữa thời gian nhìn màn hình và các hoạt động ngoài trời.",
+          cards: [
+            { word: "Câu A", isCorrect: false, badgeText: "thiếu 'to'", badgeType: "badge-wrong", meaning: "= how effectively balance thiếu to trước V" },
+            { word: "Câu B", isCorrect: true, badgeText: "chuẩn ngữ pháp", badgeType: "badge-correct", meaning: "= advice không đếm được, cấu trúc 'how to balance'" },
+            { word: "Câu C", isCorrect: false, badgeText: "sai dạng V-ing", badgeType: "badge-wrong", meaning: "= how balancing là sai cấu trúc nghi vấn + to V" },
+            { word: "Câu D", isCorrect: false, badgeText: "sai 'an advice'", badgeType: "badge-wrong", meaning: "= advice là danh từ không đếm được, không dùng 'an'" }
+          ],
+          whyCorrect: { ruleTitle: "Danh từ không đếm được Advice & Cấu trúc Wh-word + to V", detail: "1. 'Advice' là danh từ không đếm được nên không dùng mạo từ 'an'.<br>2. Cấu trúc từ để hỏi kết hợp động từ nguyên mẫu có 'to': <span class='exp-highlight-green'>how to effectively balance</span>." },
+          whyWrong: [
+            { word: "Câu A", reason: "thiếu 'to' sau how." },
+            { word: "Câu C", reason: "dùng 'balancing' sai ngữ pháp." },
+            { word: "Câu D", reason: "dùng 'an advice' là lỗi sai nghiêm trọng về danh từ không đếm được." }
+          ]
+        }
+      },
+      {
+        id: 13,
+        exTitle: "DẠNG 10: DÙNG TỪ GỢI Ý TẠO THÀNH CÂU HOÀN CHỈNH - Mark the letter A, B, C, or D on your answer sheet to indicate the sentence that is BEST written from the words/phrases given.",
+        question: "Question 3. Loud / street noise / get / hard / it is / me / concentrate / the homework.",
+        options: [
+          { key: "A", text: "Louder the street noise gets, the harder it is for me to concentrate on the homework.", raw: "Louder the street noise gets, the harder it is for me to concentrate on the homework." },
+          { key: "B", text: "The louder the street noise gets, harder it is for me to concentrate on the homework.", raw: "The louder the street noise gets, harder it is for me to concentrate on the homework." },
+          { key: "C", text: "The louder the street noise gets, the harder it is for me to concentrate on the homework.", raw: "The louder the street noise gets, the harder it is for me to concentrate on the homework." },
+          { key: "D", text: "Louder the street noise gets, harder it is for me to concentrate on the homework.", raw: "Louder the street noise gets, harder it is for me to concentrate on the homework." }
+        ],
+        correct: "C",
+        explanation: {
+          translation: "Tiếng ồn đường phố càng lớn thì tôi càng khó tập trung vào việc làm bài tập về nhà.",
+          cards: [
+            { word: "Câu A", isCorrect: false, badgeText: "thiếu 'The'", badgeType: "badge-wrong", meaning: "= vế đầu thiếu mạo từ The trước Louder" },
+            { word: "Câu B", isCorrect: false, badgeText: "thiếu 'the'", badgeType: "badge-wrong", meaning: "= vế sau thiếu the trước harder" },
+            { word: "Câu C", isCorrect: true, badgeText: "chuẩn so sánh kép", badgeType: "badge-correct", meaning: "= The louder..., the harder it is for me to..." },
+            { word: "Câu D", isCorrect: false, badgeText: "thiếu cả 2 The", badgeType: "badge-wrong", meaning: "= thiếu mạo từ The ở cả hai vế so sánh" }
+          ],
+          whyCorrect: { ruleTitle: "Cấu trúc So sánh kép (Double Comparative)", detail: "Công thức chuẩn xác: <span class='exp-highlight-green'>The + comparative + S + V, the + comparative + S + V</span>. Bắt buộc cả 2 vế đều phải có mạo từ 'The' đứng đầu: <span class='exp-highlight-green'>The louder..., the harder...</span>." },
+          whyWrong: [
+            { word: "Câu A", reason: "vế đầu thiếu 'The'." },
+            { word: "Câu B", reason: "vế sau thiếu 'the'." },
+            { word: "Câu D", reason: "thiếu mạo từ ở cả hai vế." }
+          ]
+        }
+      },
+      {
+        id: 14,
+        exTitle: "DẠNG 10: DÙNG TỪ GỢI Ý TẠO THÀNH CÂU HOÀN CHỈNH - Mark the letter A, B, C, or D on your answer sheet to indicate the sentence that is BEST written from the words/phrases given.",
+        question: "Question 4. The / community / ask / refund / if / garbage / collector / miss / another / pickup.",
+        options: [
+          { key: "A", text: "The community must ask for a refund if the garbage collector miss another pickup.", raw: "The community must ask for a refund if the garbage collector miss another pickup." },
+          { key: "B", text: "The community will ask for a refund if the garbage collector misses another pickup.", raw: "The community will ask for a refund if the garbage collector misses another pickup." },
+          { key: "C", text: "The community might ask out a refund if the garbage collector misses another pickup.", raw: "The community might ask out a refund if the garbage collector misses another pickup." },
+          { key: "D", text: "The community can ask over a refund if the garbage collector misses another pickup.", raw: "The community can ask over a refund if the garbage collector misses another pickup." }
+        ],
+        correct: "B",
+        explanation: {
+          translation: "Cộng đồng dân cư sẽ yêu cầu hoàn tiền nếu người thu gom rác bỏ lỡ thêm một lần thu gom nào nữa.",
+          cards: [
+            { word: "Câu A", isCorrect: false, badgeText: "chưa chia động từ", badgeType: "badge-wrong", meaning: "= 'collector miss' là sai ngữ pháp (chủ ngữ số ít)" },
+            { word: "Câu B", isCorrect: true, badgeText: "chuẩn If loại 1", badgeType: "badge-correct", meaning: "= will ask for a refund, chia misses số ít" },
+            { word: "Câu C", isCorrect: false, badgeText: "sai phrasal verb", badgeType: "badge-wrong", meaning: "= ask out nghĩa là mời đi hẹn hò" },
+            { word: "Câu D", isCorrect: false, badgeText: "sai phrasal verb", badgeType: "badge-wrong", meaning: "= ask over nghĩa là mời về nhà chơi" }
+          ],
+          whyCorrect: { ruleTitle: "Câu điều kiện loại 1 & Phrasal verb 'Ask for'", detail: "1. Cụm từ yêu cầu hoàn tiền: <span class='exp-highlight-green'>ask for a refund</span>.<br>2. Cấu trúc If loại 1: <span class='exp-highlight-green'>S + will + V-inf if S + V(s/es)</span> → 'will ask for... if the collector misses...'." },
+          whyWrong: [
+            { word: "Câu A", reason: "động từ 'miss' ở ngôi thứ 3 số ít chưa thêm '-es'." },
+            { word: "Câu C", reason: "'ask out' là rủ đi chơi, hẹn hò." },
+            { word: "Câu D", reason: "'ask over' là mời đến thăm nhà." }
+          ]
+        }
+      },
+      {
+        id: 15,
+        exTitle: "DẠNG 10: DÙNG TỪ GỢI Ý TẠO THÀNH CÂU HOÀN CHỈNH - Mark the letter A, B, C, or D on your answer sheet to indicate the sentence that is BEST written from the words/phrases given.",
+        question: "Question 5. When / feeling / overwhelmed / students / should / action / by / reach out to / counselor.",
+        options: [
+          { key: "A", text: "When feeling overwhelmed, students should make action by reaching out to a counselor.", raw: "When feeling overwhelmed, students should make action by reaching out to a counselor." },
+          { key: "B", text: "When feeling overwhelmed, students should lay action by reaching out to a counselor.", raw: "When feeling overwhelmed, students should lay action by reaching out to a counselor." },
+          { key: "C", text: "When feeling overwhelmed, students should see action by reaching out to a counselor.", raw: "When feeling overwhelmed, students should see action by reaching out to a counselor." },
+          { key: "D", text: "When feeling overwhelmed, students should take action by reaching out to a counselor.", raw: "When feeling overwhelmed, students should take action by reaching out to a counselor." }
+        ],
+        correct: "D",
+        explanation: {
+          translation: "Khi cảm thấy bị quá tải, học sinh nên hành động bằng cách tìm đến chuyên viên tư vấn tâm lý.",
+          cards: [
+            { word: "Câu A", isCorrect: false, badgeText: "sai collocation", badgeType: "badge-wrong", meaning: "= không dùng 'make action'" },
+            { word: "Câu B", isCorrect: false, badgeText: "sai collocation", badgeType: "badge-wrong", meaning: "= không dùng 'lay action'" },
+            { word: "Câu C", isCorrect: false, badgeText: "sai collocation", badgeType: "badge-wrong", meaning: "= không dùng 'see action'" },
+            { word: "Câu D", isCorrect: true, badgeText: "chuẩn collocation", badgeType: "badge-correct", meaning: "= take action (hành động, đưa ra biện pháp)" }
+          ],
+          whyCorrect: { ruleTitle: "Cụm từ cố định Collocation với Action", detail: "Trong tiếng Anh, kết hợp với danh từ 'action' để chỉ việc hành động luôn là động từ <span class='exp-highlight-green'>take</span>: <span class='exp-highlight-green'>take action</span> (hành động, giải quyết vấn đề)." },
+          whyWrong: [
+            { word: "Câu A", reason: "make không kết hợp với action." },
+            { word: "Câu B", reason: "lay action sai ngữ pháp." },
+            { word: "Câu C", reason: "see action không mang nghĩa đưa ra hành động giải quyết." }
+          ]
+        }
+      },
+
+      // DẠNG 11: SẮP XẾP CÂU TẠO THÀNH ĐOẠN VĂN / LÁ THƯ (2 câu)
+      {
+        id: 16,
+        exTitle: "DẠNG 11: SẮP XẾP CÂU TẠO THÀNH ĐOẠN VĂN / LÁ THƯ - Mark the letter A, B, C, or D to arrange the sentences into a meaningful paragraph / letter.",
+        question: "Question 1. Arrange the following sentences into a meaningful paragraph:<br><b>a.</b> Instead, I focus on preventative measures like maintaining a healthy lifestyle and boosting my immune system naturally.<br><b>b.</b> Balancing health and responsibility has always been a priority for me, especially with medical decisions.<br><b>c.</b> When I do need antibiotics, I strictly follow my doctor's guidance to ensure proper use.<br><b>d.</b> I try not to use antibiotics too much because using them incorrectly can cause resistance.<br><b>e.</b> In this way, I not only protect my health but also contribute to a broader effort to preserve the effectiveness of these life-saving medications.",
+        options: [
+          { key: "A", text: "b - d - a - c - e", raw: "b - d - a - c - e" },
+          { key: "B", text: "a - c - d - b - e", raw: "a - c - d - b - e" },
+          { key: "C", text: "d - b - c - a - e", raw: "d - b - c - a - e" },
+          { key: "D", text: "c - a - b - d - e", raw: "c - a - b - d - e" }
+        ],
+        correct: "A",
+        explanation: {
+          translation: "Sắp xếp đoạn văn hoàn chỉnh:<br><b>b.</b> Cân bằng giữa sức khỏe và trách nhiệm luôn là ưu tiên hàng đầu của tôi, đặc biệt là trong các quyết định y tế.<br><b>d.</b> Tôi cố gắng không lạm dụng kháng sinh vì dùng sai cách có thể gây kháng thuốc.<br><b>a.</b> Thay vào đó, tôi tập trung vào các biện pháp phòng ngừa như duy trì lối sống lành mạnh và tăng cường hệ miễn dịch tự nhiên.<br><b>c.</b> Khi thực sự cần dùng kháng sinh, tôi tuân thủ nghiêm ngặt chỉ dẫn của bác sĩ để đảm bảo sử dụng đúng cách.<br><b>e.</b> Bằng cách này, tôi không chỉ bảo vệ sức khỏe của mình mà còn đóng góp vào nỗ lực chung nhằm duy trì hiệu quả của những loại thuốc cứu người này.",
+          cards: [
+            { word: "b-d-a-c-e", isCorrect: true, badgeText: "mạch lạc 100%", badgeType: "badge-correct", meaning: "= mở đầu chủ đề (b) -> hạn chế kháng sinh (d) -> thay vào đó (a) -> khi cần thì tuân thủ (c) -> kết luận (e)" },
+            { word: "a-c-d-b-e", isCorrect: false, badgeText: "sai câu mở đầu", badgeType: "badge-wrong", meaning: "= không mở đầu đoạn văn bằng 'Instead'" },
+            { word: "d-b-c-a-e", isCorrect: false, badgeText: "lộn xộn", badgeType: "badge-wrong", meaning: "= câu chủ đề b bị đẩy vào giữa" },
+            { word: "c-a-b-d-e", isCorrect: false, badgeText: "đứt mạch", badgeType: "badge-wrong", meaning: "= chưa nói về kháng sinh đã nêu cách dùng" }
+          ],
+          whyCorrect: { ruleTitle: "Mạch phát triển đoạn văn nghị luận", detail: "Câu chủ đề mở đầu khái quát (b) → Nêu lý do hạn chế kháng sinh (d) → Từ liên kết 'Instead' dẫn sang biện pháp phòng ngừa (a) → Nêu trường hợp ngoại lệ bắt buộc phải dùng thuốc (c) → Câu kết luận 'In this way' đúc kết ý nghĩa (e): <span class='exp-highlight-green'>b - d - a - c - e</span>." },
+          whyWrong: [
+            { word: "a-c-d-b-e", reason: "'Instead' phải đứng sau một điều phủ định ở câu trước." },
+            { word: "d-b-c-a-e", reason: "mất tính liên kết câu chủ đề." },
+            { word: "c-a-b-d-e", reason: "trật tự tư duy bị đảo lộn." }
+          ]
+        }
+      },
+      {
+        id: 17,
+        exTitle: "DẠNG 11: SẮP XẾP CÂU TẠO THÀNH ĐOẠN VĂN / LÁ THƯ - Mark the letter A, B, C, or D to arrange the sentences into a meaningful paragraph / letter.",
+        question: "Question 2. Arrange the following sentences into a meaningful letter:<br>Dear Jenny,<br><b>a.</b> Indeed, it was an unforgettable experience, and I hope to go back soon.<br><b>b.</b> I got to try some fantastic local food too, like sushi and all sorts of matcha desserts.<br><b>c.</b> I recently returned from a trip to Kyoto, Japan, and I'm so excited to tell you all about it!<br><b>d.</b> One of the highlights of my trip was visiting the Fushimi Inari Shrine, where I walked through thousands of red torii gates – it felt like stepping into another world.<br><b>e.</b> The city is filled with beautiful temples, traditional tea houses, and peaceful gardens, making it the perfect place for relaxation.<br>Best regards,<br>Linda",
+        options: [
+          { key: "A", text: "d - e - c - b - a", raw: "d - e - c - b - a" },
+          { key: "B", text: "b - d - e - a - c", raw: "b - d - e - a - c" },
+          { key: "C", text: "c - d - b - a - e", raw: "c - d - b - a - e" },
+          { key: "D", text: "c - d - e - b - a", raw: "c - d - e - b - a" }
+        ],
+        correct: "D",
+        explanation: {
+          translation: "Sắp xếp bức thư hoàn chỉnh:<br>Jenny thân mến,<br><b>c.</b> Mình vừa trở về sau chuyến du lịch Kyoto, Nhật Bản và đang vô cùng hào hứng kể cho cậu nghe đây!<br><b>d.</b> Một trong những điểm nhấn đáng nhớ nhất là ghé thăm Đền Fushimi Inari, nơi mình được bước qua hàng ngàn cổng torii đỏ rực rỡ – cảm giác như bước vào một thế giới khác vậy.<br><b>e.</b> Thành phố này tràn ngập những ngôi chùa cổ kính, quán trà truyền thống và những khu vườn thanh bình, nơi đây thực sự là điểm đến hoàn hảo để thư giãn.<br><b>b.</b> Mình cũng được thưởng thức nhiều món ăn địa phương tuyệt vời nữa, như sushi và đủ loại món tráng miệng từ matcha.<br><b>a.</b> Quả thực, đó là một trải nghiệm khó quên và mình mong sẽ sớm có dịp quay trở lại.<br>Thân ái, Linda",
+          cards: [
+            { word: "c-d-e-b-a", isCorrect: true, badgeText: "chuẩn mạch thư 100%", badgeType: "badge-correct", meaning: "= mở đầu kể chuyến đi (c) -> điểm nhấn cảnh đẹp (d, e) -> ẩm thực (b) -> cảm xúc kết thư (a)" },
+            { word: "d-e-c-b-a", isCorrect: false, badgeText: "sai mở đầu", badgeType: "badge-wrong", meaning: "= chưa chào kể đi đâu đã nói 'One of the highlights'" },
+            { word: "b-d-e-a-c", isCorrect: false, badgeText: "sai mạch", badgeType: "badge-wrong", meaning: "= mở đầu bằng 'I got to try food too' là phi lý" },
+            { word: "c-d-b-a-e", isCorrect: false, badgeText: "sai kết thư", badgeType: "badge-wrong", meaning: "= câu kết thư a bị kẹp vào giữa chừng" }
+          ],
+          whyCorrect: { ruleTitle: "Trật tự mạch văn một lá thư du lịch", detail: "Câu mở thư giới thiệu chuyến đi mới về (c) → Kể về điểm nhấn tham quan đền chùa (d, e) → Kể thêm về ẩm thực kèm từ liên kết 'too' (b) → Câu cảm nghĩ đúc kết và mong ước quay lại trước khi ký tên (a): <span class='exp-highlight-green'>c - d - e - b - a</span>." },
+          whyWrong: [
+            { word: "d-e-c-b-a", reason: "câu (c) phải đứng đầu thư để giới thiệu chuyến đi Kyoto." },
+            { word: "b-d-e-a-c", reason: "câu (b) chứa 'too' không thể mở đầu thư." },
+            { word: "c-d-b-a-e", reason: "câu (e) không thể đứng sau câu kết cảm nghĩ (a)." }
+          ]
+        }
+      },
+
+      // DẠNG 12: DẠNG ĐỌC THÔNG BÁO (2 câu)
+      {
+        id: 18,
+        exTitle: "DẠNG 12: DẠNG ĐỌC THÔNG BÁO - Mark the letter A, B, C, or D on your answer sheet to indicate the meaning of the notice in each of the following questions.",
+        question: "Question 1. Read the notice below:<br><div class='sign-box-wrapper'><div class='sign-notice-card'><h4>ATTENTION, PASSENGERS</h4><p style='margin:10px 0; font-size:1.1rem; font-weight:800;'>Is there a route you prefer to take?</p><p style='font-size:0.95rem; color:#636E72;'>Speak to the taxi driver before the journey</p></div></div>What does this notice mean?",
+        options: [
+          { key: "A", text: "Once the journey has started, do not speak to the driver.", raw: "Once the journey has started, do not speak to the driver." },
+          { key: "B", text: "The driver is willing to discuss the way to go.", raw: "The driver is willing to discuss the way to go." },
+          { key: "C", text: "Passengers cannot change their route once the journey has started.", raw: "Passengers cannot change their route once the journey has started." },
+          { key: "D", text: "Passengers must always tell the driver the route they want to take.", raw: "Passengers must always tell the driver the route they want to take." }
+        ],
+        correct: "B",
+        explanation: {
+          translation: "Thông báo: 'KÍNH GỬI HÀNH KHÁCH - Quý khách có lộ trình nào ưu tiên đi không? Hãy trao đổi với tài xế taxi trước khi bắt đầu hành trình.'<br>→ Ý nghĩa: Tài xế sẵn lòng thảo luận về lộ trình đường đi cùng hành khách.",
+          cards: [
+            { word: "Câu A", isCorrect: false, badgeText: "sai ý", badgeType: "badge-wrong", meaning: "= cấm nói chuyện sau khi xe chạy (không có trong thông báo)" },
+            { word: "Câu B", isCorrect: true, badgeText: "chính xác", badgeType: "badge-correct", meaning: "= tài xế sẵn lòng thảo luận lộ trình đường đi" },
+            { word: "Câu C", isCorrect: false, badgeText: "suy diễn sai", badgeType: "badge-wrong", meaning: "= hành khách không thể đổi lộ trình (thông báo không cấm)" },
+            { word: "Câu D", isCorrect: false, badgeText: "quá mức 'must'", badgeType: "badge-wrong", meaning: "= bắt buộc luôn luôn phải chỉ đường (đây chỉ là gợi ý nếu muốn)" }
+          ],
+          whyCorrect: { ruleTitle: "Đọc hiểu ý nghĩa thông điệp dịch vụ", detail: "Câu hỏi 'Is there a route you prefer...?' thể hiện sự cởi mở, tôn trọng mong muốn của khách hàng. Do đó, tài xế sẵn lòng bàn bạc đường đi: <span class='exp-highlight-green'>The driver is willing to discuss the way to go</span>." },
+          whyWrong: [
+            { word: "Câu A", reason: "thông báo không cấm hành khách nói chuyện." },
+            { word: "Câu C", reason: "không có quy định cấm đổi lộ trình." },
+            { word: "Câu D", reason: "dùng từ bắt buộc 'must always' sai tính chất tự nguyện." }
+          ]
+        }
+      },
+      {
+        id: 19,
+        exTitle: "DẠNG 12: DẠNG ĐỌC THÔNG BÁO - Mark the letter A, B, C, or D on your answer sheet to indicate the meaning of the notice in each of the following questions.",
+        question: "Question 2. Read the notice below:<br><div class='sign-box-wrapper'><div class='sign-notice-card'><h4>CENTRAL GYM</h4><p style='margin:10px 0; font-size:1.1rem; font-weight:800; color:#E67E22;'>15-minute limit on the use of equipment during busy times</p></div></div>What does this notice mean?",
+        options: [
+          { key: "A", text: "Equipment is available for a maximum of 15 minutes at any time.", raw: "Equipment is available for a maximum of 15 minutes at any time." },
+          { key: "B", text: "When there are a lot of people in the gym, avoid using the equipment.", raw: "When there are a lot of people in the gym, avoid using the equipment." },
+          { key: "C", text: "When the gym is crowded, there is a time limit for using the equipment.", raw: "When the gym is crowded, there is a time limit for using the equipment." },
+          { key: "D", text: "At busy times, you may have to queue to use the equipment.", raw: "At busy times, you may have to queue to use the equipment." }
+        ],
+        correct: "C",
+        explanation: {
+          translation: "Thông báo: 'PHÒNG TẬP CENTRAL GYM - Giới hạn tối đa 15 phút sử dụng mỗi máy tập trong các khung giờ cao điểm.'<br>→ Ý nghĩa: Khi phòng gym đông đúc, có quy định giới hạn thời gian sử dụng thiết bị.",
+          cards: [
+            { word: "Câu A", isCorrect: false, badgeText: "sai thời điểm", badgeType: "badge-wrong", meaning: "= 'at any time' là sai, quy định chỉ áp dụng lúc cao điểm" },
+            { word: "Câu B", isCorrect: false, badgeText: "sai ý", badgeType: "badge-wrong", meaning: "= khuyên tránh dùng máy (sai, vẫn được tập nhưng tối đa 15p)" },
+            { word: "Câu C", isCorrect: true, badgeText: "chính xác 100%", badgeType: "badge-correct", meaning: "= crowded = busy times; time limit = 15-minute limit" },
+            { word: "Câu D", isCorrect: false, badgeText: "không nêu trong bài", badgeType: "badge-wrong", meaning: "= nói về việc phải xếp hàng (không phải nội dung chính của quy định)" }
+          ],
+          whyCorrect: { ruleTitle: "Kỹ năng tìm từ đồng nghĩa (Paraphrasing)", detail: "<span class='exp-highlight-green'>during busy times</span> = <span class='exp-highlight-green'>when the gym is crowded</span> (lúc phòng tập đông người), và <span class='exp-highlight-green'>15-minute limit</span> = <span class='exp-highlight-green'>a time limit</span> (giới hạn thời gian)." },
+          whyWrong: [
+            { word: "Câu A", reason: "'at any time' (bất kỳ lúc nào) mâu thuẫn với 'busy times'." },
+            { word: "Câu B", reason: "thông báo không cấm hay khuyên tránh dùng máy." },
+            { word: "Câu D", reason: "không nói về việc xếp hàng." }
+          ]
+        }
+      },
+
+      // DẠNG 13: DẠNG ĐỌC QUA ẢNH (5 câu)
+      {
+        id: 20,
+        exTitle: "DẠNG 13: DẠNG ĐỌC QUA ẢNH - Look at the sign or the notice. Choose the best answer (A, B, C, or D).",
+        question: "Question 1. You see a sign at the entrance of a park:<br><div class='sign-box-wrapper'><div class='sign-park'><h3>PLEASE KEEP OUR PARK CLEAN</h3><p style='margin:8px 0; color:#FDCB6E; font-size:1.15rem;'>DO NOT LITTER</p><p style='font-size:0.92rem;'>USE THE BINS PROVIDED 🗑️</p></div></div>What does the sign ask people to do?",
+        options: [
+          { key: "A", text: "To plant more trees in the park.", raw: "To plant more trees in the park." },
+          { key: "B", text: "To avoid entering the park.", raw: "To avoid entering the park." },
+          { key: "C", text: "To put their trash in the correct place.", raw: "To put their trash in the correct place." },
+          { key: "D", text: "To bring their own bins to the park.", raw: "To bring their own bins to the park." }
+        ],
+        correct: "C",
+        explanation: {
+          translation: "Bạn thấy một biển báo ở lối vào công viên: 'LÀM ƠN HÃY GIỮ GÌN CÔNG VIÊN SẠCH ĐẸP - KHÔNG VỨT RÁC BỪA BÃI - HÃY SỬ DỤNG THÙNG RÁC CÓ SẴN.'<br>→ Biển báo yêu cầu mọi người: Bỏ rác đúng nơi quy định.",
+          cards: [
+            { word: "plant trees", isCorrect: false, badgeText: "lạc đề", badgeType: "badge-wrong", meaning: "= trồng thêm cây trong công viên" },
+            { word: "avoid entering", isCorrect: false, badgeText: "sai hoàn toàn", badgeType: "badge-wrong", meaning: "= tránh vào công viên" },
+            { word: "trash in correct place", isCorrect: true, badgeText: "chính xác", badgeType: "badge-correct", meaning: "= vứt rác đúng nơi quy định (= use the bins provided)" },
+            { word: "bring own bins", isCorrect: false, badgeText: "hiểu sai từ", badgeType: "badge-wrong", meaning: "= tự mang theo thùng rác của mình" }
+          ],
+          whyCorrect: { ruleTitle: "Đọc hiểu biển báo môi trường công cộng", detail: "Lời nhắc <span class='exp-highlight-green'>'DO NOT LITTER'</span> (không vứt rác bừa bãi) và <span class='exp-highlight-green'>'USE THE BINS PROVIDED'</span> (dùng thùng rác được trang bị sẵn) đồng nghĩa với việc <span class='exp-highlight-green'>put their trash in the correct place</span>." },
+          whyWrong: [
+            { word: "plant trees", reason: "biển báo nói về vệ sinh, không nói về trồng cây." },
+            { word: "avoid entering", reason: "công viên mở cửa chào đón mọi người." },
+            { word: "bring own bins", reason: "công viên đã có sẵn thùng rác, không yêu cầu tự mang." }
+          ]
+        }
+      },
+      {
+        id: 21,
+        exTitle: "DẠNG 13: DẠNG ĐỌC QUA ẢNH - Look at the sign or the notice. Choose the best answer (A, B, C, or D).",
+        question: "Question 2. You see a sign at your school's gym:<br><div class='sign-box-wrapper'><div class='sign-gym-orange'><div style='font-size:1.6rem;'>📵 🏃</div><h3 style='margin:6px 0; font-size:1.2rem; text-transform:uppercase;'>BE ACTIVE! DROP YOUR PHONE</h3><p style='font-size:0.9rem; font-weight:800;'>4 PM DAILY · SCREEN-FREE ZONE</p></div></div>What does this sign encourage students to do?",
+        options: [
+          { key: "A", text: "Use their phones at the gym.", raw: "Use their phones at the gym." },
+          { key: "B", text: "Stop using their devices and exercise.", raw: "Stop using their devices and exercise." },
+          { key: "C", text: "Leave the gym at 4 PM.", raw: "Leave the gym at 4 PM." },
+          { key: "D", text: "Watch videos about exercise.", raw: "Watch videos about exercise." }
+        ],
+        correct: "B",
+        explanation: {
+          translation: "Bạn thấy một biển báo tại phòng tập thể dục của trường: 'HÃY TÍCH CỰC VẬN ĐỘNG! BUÔNG ĐIỆN THOẠI XUỐNG - 4 GIỜ CHIỀU MỖI NGÀY - KHÔNG GIAN KHÔNG MÀN HÌNH ĐIỆN TỬ.'<br>→ Biển báo khuyến khích học sinh: Ngừng sử dụng thiết bị điện tử và tham gia tập thể dục.",
+          cards: [
+            { word: "Use phones", isCorrect: false, badgeText: "ngược ý", badgeType: "badge-wrong", meaning: "= dùng điện thoại ở phòng gym" },
+            { word: "Stop devices & exercise", isCorrect: true, badgeText: "chuẩn xác", badgeType: "badge-correct", meaning: "= buông máy móc để tập luyện (= drop phone, be active)" },
+            { word: "Leave gym at 4 PM", isCorrect: false, badgeText: "hiểu sai giờ", badgeType: "badge-wrong", meaning: "= rời phòng gym lúc 4 giờ chiều" },
+            { word: "Watch videos", isCorrect: false, badgeText: "ngược ý", badgeType: "badge-wrong", meaning: "= xem video tập thể dục (vẫn là nhìn màn hình)" }
+          ],
+          whyCorrect: { ruleTitle: "Ý nghĩa khẩu hiệu Screen-Free và Be Active", detail: "<span class='exp-highlight-green'>'Drop your phone'</span> = stop using devices (dừng dùng điện thoại) kết hợp với <span class='exp-highlight-green'>'Be active'</span> = exercise (vận động, tập thể thao)." },
+          whyWrong: [
+            { word: "Use phones", reason: "biển báo có hình gạch chéo điện thoại cấm dùng." },
+            { word: "Leave gym", reason: "4 PM là giờ bắt đầu hoạt động rèn luyện." },
+            { word: "Watch videos", reason: "khu vực 'screen-free' cấm mọi loại màn hình." }
+          ]
+        }
+      },
+      {
+        id: 22,
+        exTitle: "DẠNG 13: DẠNG ĐỌC QUA ẢNH - Look at the sign or the notice. Choose the best answer (A, B, C, or D).",
+        question: "Question 3. You see this notice on the wall of a public library:<br><div class='sign-box-wrapper'><div class='sign-quiet-zone'><div style='font-size:1.8rem;'>🔕 💬⬇️</div><h3 style='margin:6px 0; color:#2980B9;'>QUIET ZONE</h3><p style='font-size:0.92rem; font-weight:700;'>Please silence your mobile phones and keep conversations to a minimum</p></div></div>What does the notice mean?",
+        options: [
+          { key: "A", text: "You are not allowed to use phones in the library.", raw: "You are not allowed to use phones in the library." },
+          { key: "B", text: "You should speak loudly to be heard.", raw: "You should speak loudly to be heard." },
+          { key: "C", text: "This is an area for group discussions.", raw: "This is an area for group discussions." },
+          { key: "D", text: "You need to be quiet and avoid making noise.", raw: "You need to be quiet and avoid making noise." }
+        ],
+        correct: "D",
+        explanation: {
+          translation: "Bạn thấy biển thông báo này trên tường thư viện công cộng: 'KHU VỰC YÊN LẶNG - Vui lòng để điện thoại ở chế độ im lặng và hạn chế tối đa việc trò chuyện.'<br>→ Biển báo có nghĩa: Bạn cần giữ yên lặng và tránh gây ồn ào.",
+          cards: [
+            { word: "not allowed to use", isCorrect: false, badgeText: "quá mức", badgeType: "badge-wrong", meaning: "= cấm tiệt sử dụng (chỉ yêu cầu để im lặng 'silence')" },
+            { word: "speak loudly", isCorrect: false, badgeText: "trái ngược", badgeType: "badge-wrong", meaning: "= nên nói to để người khác nghe thấy" },
+            { word: "group discussions", isCorrect: false, badgeText: "trái ngược", badgeType: "badge-wrong", meaning: "= khu vực dành cho thảo luận nhóm" },
+            { word: "be quiet & avoid noise", isCorrect: true, badgeText: "chuẩn xác 100%", badgeType: "badge-correct", meaning: "= giữ trật tự và tránh làm ồn (= quiet zone)" }
+          ],
+          whyCorrect: { ruleTitle: "Nội quy thư viện công cộng", detail: "Cụm từ <span class='exp-highlight-green'>'QUIET ZONE'</span> (khu vực giữ yên lặng) cùng chỉ dẫn 'keep conversations to a minimum' nghĩa là bạn phải giữ gìn sự trật tự, tránh tạo ra tiếng ồn: <span class='exp-highlight-green'>be quiet and avoid making noise</span>." },
+          whyWrong: [
+            { word: "not allowed to use", reason: "vẫn có thể dùng điện thoại tra cứu tài liệu ở chế độ im lặng." },
+            { word: "speak loudly", reason: "nói to làm náo loạn thư viện, sai hoàn toàn." },
+            { word: "group discussions", reason: "khu thảo luận nhóm sẽ rất ồn ào, trái với Quiet Zone." }
+          ]
+        }
+      },
+      {
+        id: 23,
+        exTitle: "DẠNG 13: DẠNG ĐỌC QUA ẢNH - Look at the sign or the notice. Choose the best answer (A, B, C, or D).",
+        question: "Question 4. You see this sign at a busy intersection:<br><div class='sign-box-wrapper'><div class='sign-no-crossing'><h3 style='margin-bottom:6px; letter-spacing:1px;'>NO PEDESTRIAN CROSSING</h3><div style='font-size:2rem; margin:6px 0;'>🚷</div><p style='font-size:0.95rem; font-weight:800; background:rgba(0,0,0,0.2); padding:4px 8px; border-radius:8px;'>Use overhead bridge for safety.</p></div></div>What should people do?",
+        options: [
+          { key: "A", text: "Cross the street quickly at this spot.", raw: "Cross the street quickly at this spot." },
+          { key: "B", text: "Wait for the traffic light to turn green.", raw: "Wait for the traffic light to turn green." },
+          { key: "C", text: "Avoid walking in this area.", raw: "Avoid walking in this area." },
+          { key: "D", text: "Walk over the street using the bridge.", raw: "Walk over the street using the bridge." }
+        ],
+        correct: "D",
+        explanation: {
+          translation: "Bạn thấy biển báo này ở một ngã tư đông đúc: 'CẤM NGƯỜI ĐI BỘ SANG ĐƯỜNG - Hãy sử dụng cầu vượt bộ hành để đảm bảo an toàn.'<br>→ Mọi người nên làm gì: Sang đường bằng cách đi trên cầu vượt bộ hành.",
+          cards: [
+            { word: "Cross quickly", isCorrect: false, badgeText: "vi phạm luật", badgeType: "badge-wrong", meaning: "= băng qua đường thật nhanh ở vị trí này" },
+            { word: "Wait for light", isCorrect: false, badgeText: "không có thông tin", badgeType: "badge-wrong", meaning: "= chờ đèn giao thông chuyển xanh" },
+            { word: "Avoid walking", isCorrect: false, badgeText: "sai ý", badgeType: "badge-wrong", meaning: "= tránh đi bộ trong toàn bộ khu vực" },
+            { word: "Walk using bridge", isCorrect: true, badgeText: "chính xác", badgeType: "badge-correct", meaning: "= dùng cầu vượt để sang đường (= use overhead bridge)" }
+          ],
+          whyCorrect: { ruleTitle: "Biển chỉ dẫn an toàn giao thông đường bộ", detail: "Biển cấm người đi bộ băng cắt qua lòng đường nguy hiểm ('NO PEDESTRIAN CROSSING') và hướng dẫn rõ ràng: <span class='exp-highlight-green'>'Use overhead bridge for safety'</span> = <span class='exp-highlight-green'>Walk over the street using the bridge</span>." },
+          whyWrong: [
+            { word: "Cross quickly", reason: "băng qua đường là hành vi phạm luật giao thông." },
+            { word: "Wait for light", reason: "vị trí này cấm sang đường dưới mặt đất." },
+            { word: "Avoid walking", reason: "vẫn được đi bộ trên vỉa hè và qua cầu vượt." }
+          ]
+        }
+      },
+      {
+        id: 24,
+        exTitle: "DẠNG 13: DẠNG ĐỌC QUA ẢNH - Look at the sign or the notice. Choose the best answer (A, B, C, or D).",
+        question: "Question 5. You see this sign at a playground:<br><div class='sign-box-wrapper'><div class='sign-playground'><h3 style='color:#7D6608; letter-spacing:0.5px;'>FOR CHILDREN UNDER 12</h3><div style='font-size:2rem; margin:6px 0;'>🧒 🛝</div><p style='font-size:0.92rem; font-weight:800; color:#5B4905;'>Must be accompanied by an adult</p></div></div>What is the rule of this playground?",
+        options: [
+          { key: "A", text: "Children under 12 must be with an adult.", raw: "Children under 12 must be with an adult." },
+          { key: "B", text: "Only adults can play here.", raw: "Only adults can play here." },
+          { key: "C", text: "Teenagers over 12 can play with younger children.", raw: "Teenagers over 12 can play with younger children." },
+          { key: "D", text: "Children are not allowed to play here.", raw: "Children are not allowed to play here." }
+        ],
+        correct: "A",
+        explanation: {
+          translation: "Bạn thấy biển báo này ở một sân chơi: 'DÀNH CHO TRẺ EM DƯỚI 12 TUỔI - Trẻ phải có người lớn đi kèm giám sát.'<br>→ Quy tắc của sân chơi này là: Trẻ em dưới 12 tuổi bắt buộc phải đi cùng một người lớn.",
+          cards: [
+            { word: "with an adult", isCorrect: true, badgeText: "chuẩn xác", badgeType: "badge-correct", meaning: "= trẻ dưới 12 tuổi phải có người lớn đi kèm" },
+            { word: "Only adults play", isCorrect: false, badgeText: "ngược ý", badgeType: "badge-wrong", meaning: "= chỉ có người lớn mới được chơi ở đây" },
+            { word: "Teenagers over 12", isCorrect: false, badgeText: "sai đối tượng", badgeType: "badge-wrong", meaning: "= thanh thiếu niên trên 12 tuổi được chơi" },
+            { word: "Children not allowed", isCorrect: false, badgeText: "trái ngược", badgeType: "badge-wrong", meaning: "= trẻ em không được phép chơi" }
+          ],
+          whyCorrect: { ruleTitle: "Quy định an toàn tại khu vui chơi trẻ em", detail: "Biển hiệu ghi rõ sân chơi dành cho trẻ nhỏ dưới 12 tuổi kèm quy định an toàn bắt buộc phải có phụ huynh giám sát: <span class='exp-highlight-green'>Children under 12 must be with an adult</span>." },
+          whyWrong: [
+            { word: "Only adults play", reason: "sân chơi dành cho trẻ em, không phải người lớn." },
+            { word: "Teenagers over 12", reason: "sân chơi chỉ giới hạn cho trẻ dưới 12 tuổi." },
+            { word: "Children not allowed", reason: "trẻ em được chơi nhưng cần có người lớn trông nom." }
+          ]
+        }
+      }
+    ];
+
+    const userAnswers = {};
+
+    /* TỔNG HỢP ÂM THANH WEB AUDIO API (Hoạt động 100% không cần link ngoài) */
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playCorrectSound() {
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc1.type = 'sine'; osc2.type = 'triangle';
+        osc1.frequency.setValueAtTime(1046.50, now);
+        osc1.frequency.exponentialRampToValueAtTime(1318.51, now + 0.12);
+        osc2.frequency.setValueAtTime(1318.51, now);
+        osc2.frequency.exponentialRampToValueAtTime(1567.98, now + 0.12);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
+        osc1.connect(gain); osc2.connect(gain); gain.connect(ctx.destination);
+        osc1.start(now); osc2.start(now);
+        osc1.stop(now + 0.65); osc2.stop(now + 0.65);
+      } catch (e) { console.log(e); }
+    }
+
+    function playWrongSound() {
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(280, now);
+        osc.frequency.linearRampToValueAtTime(190, now + 0.15);
+        osc.frequency.linearRampToValueAtTime(130, now + 0.35);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(now); osc.stop(now + 0.45);
+      } catch (e) { console.log(e); }
+    }
+
+    function launchConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 75, spread: 75, origin: { y: 0.72 }, colors: ['#8854C0', '#FDCB6E', '#00C9A7', '#FF4757', '#0984E3'] });
+      }
+    }
+
+    function shuffleArray(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function updateProgressBar() {
+      const answeredCount = Object.keys(userAnswers).length;
+      let correctCount = 0;
+      quizData.forEach(q => { if (userAnswers[q.id] === q.correct) correctCount++; });
+      const total = quizData.length;
+      const percent = (answeredCount / total) * 100;
+      document.getElementById('star-score-text').textContent = `${correctCount} / ${total}`;
+      document.getElementById('progress-ratio-text').textContent = `${answeredCount} / ${total}`;
+      document.getElementById('progress-bar-fill').style.width = `${percent}%`;
+    }
+
+    function renderQuiz() {
+      const container = document.getElementById('quiz-container');
+      container.innerHTML = '';
+      let currentEx = "";
+
+      quizData.forEach((q, idx) => {
+        if (q.exTitle !== currentEx) {
+          currentEx = q.exTitle;
+          const divider = document.createElement('div');
+          divider.className = 'exercise-divider';
+          divider.innerHTML = `<span>📘</span> <span>${currentEx}</span>`;
+          container.appendChild(divider);
+        }
+
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        card.id = `q-card-${q.id}`;
+        const shuffledOptions = shuffleArray(q.options);
+
+        const optionsHTML = `
+          <div class="options-grid ${shuffledOptions.length === 4 ? 'two-cols' : ''}">
+            ${shuffledOptions.map(opt => `
+              <button type="button" class="option-btn" id="btn-${q.id}-${opt.key}" onclick="handleSelectOption(${q.id}, '${opt.key}')">
+                <span class="option-key">${opt.key}</span>
+                <span class="option-text">${opt.text}</span>
+              </button>
+            `).join('')}
+          </div>
+        `;
+
+        const exp = q.explanation;
+        const explanationHTML = `
+          <div class="explanation-box" id="exp-${q.id}" style="display: none;">
+            <div class="exp-title">⚡ GIẢI THÍCH CHI TIẾT</div>
+            <div class="exp-translation-bubble">
+              <span class="icon">💭</span>
+              <span><strong>Dịch:</strong> ${exp.translation}</span>
+            </div>
+            <div class="exp-section-title">1. Phân tích 4 đáp án:</div>
+            <div class="analysis-grid">
+              ${exp.cards.map(c => `
+                <div class="analysis-card">
+                  <span class="analysis-word ${c.isCorrect ? 'green' : ''}">${c.word}</span>
+                  <span class="badge-pill ${c.badgeType}">${c.badgeText}</span>
+                  <span class="analysis-meaning">${c.meaning}</span>
+                </div>
+              `).join('')}
+            </div>
+            <div class="exp-rule-row">
+              <span class="check-label">2. ✅ TẠI SAO ĐÚNG?</span>
+              <span class="exp-rule-pill">${exp.whyCorrect.ruleTitle}:</span>
+              <span>${exp.whyCorrect.detail}</span>
+            </div>
+            <div class="exp-wrong-row">
+              <span class="cross-label">3. ❌ TẠI SAO SAI?</span>
+              ${exp.whyWrong.map(w => `<span class="exp-wrong-tag">${w.word}</span> -${w.reason}`).join(' ')}
+            </div>
+          </div>
+        `;
+
+        card.innerHTML = `
+          <div class="question-header">
+            <span class="question-num">Câu ${idx + 1}</span>
+            <span class="question-type-badge">Chấm điểm tức thì</span>
+          </div>
+          <div class="question-content">${q.question}</div>
+          ${optionsHTML}
+          ${explanationHTML}
+        `;
+        container.appendChild(card);
+      });
+
+      updateProgressBar();
+    }
+
+    function handleSelectOption(qId, selectedKey) {
+      if (userAnswers[qId] !== undefined) return;
+      const q = quizData.find(item => item.id === qId);
+      userAnswers[qId] = selectedKey;
+
+      const isCorrect = (selectedKey === q.correct);
+      const selectedBtn = document.getElementById(`btn-${qId}-${selectedKey}`);
+
+      if (isCorrect) {
+        selectedBtn.classList.add('correct');
+        playCorrectSound();
+        launchConfetti();
+      } else {
+        selectedBtn.classList.add('wrong');
+        playWrongSound();
+        const correctBtn = document.getElementById(`btn-${qId}-${q.correct}`);
+        if (correctBtn) correctBtn.classList.add('correct');
+      }
+
+      q.options.forEach(opt => {
+        const b = document.getElementById(`btn-${qId}-${opt.key}`);
+        if (b) b.disabled = true;
+      });
+
+      const expBox = document.getElementById(`exp-${qId}`);
+      if (expBox) expBox.style.display = 'block';
+
+      updateProgressBar();
+    }
+
+    function submitQuiz() {
+      let score = 0;
+      quizData.forEach(q => { if (userAnswers[q.id] === q.correct) score++; });
+      const total = quizData.length;
+      const percentage = (score / total) * 100;
+      let emoji = '🌟';
+      let message = '';
+
+      if (percentage < 50) {
+        emoji = '💪';
+        message = '“Điểm lần này chưa cao lắm, con cố gắng đọc kỹ giải thích đáp án và làm lại nha. Cô tin con sẽ làm tốt hơn ở lần sau!”<br><br><strong>— Ms Lê Hằng English —</strong>';
+      } else if (percentage >= 50 && percentage < 90) {
+        emoji = '👏';
+        message = '“Con đã có tiến bộ khá ổn rồi, con cố gắng đọc kỹ giải thích đáp án và làm lại nha. Cô tin con sẽ làm tốt hơn ở lần sau!”<br><br><strong>— Ms Lê Hằng English —</strong>';
+      } else {
+        emoji = '👑';
+        message = '“Làm tốt lắm, con cố gắng ring điểm 10 ở lần sau nha!”<br><br><strong>— Ms Lê Hằng English —</strong>';
+        launchConfetti();
+      }
+
+      document.getElementById('result-emoji').innerHTML = emoji;
+      document.getElementById('result-score').textContent = `${score} / ${total} CÂU ĐÚNG (${Math.round(percentage)}%)`;
+      document.getElementById('result-feedback').innerHTML = message;
+      document.getElementById('result-modal').style.display = 'flex';
+    }
+
+    function retryQuiz() {
+      document.getElementById('result-modal').style.display = 'none';
+      for (const key in userAnswers) delete userAnswers[key];
+      renderQuiz();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderQuiz();
+    });
+  </script>
+</body>
+</html>
